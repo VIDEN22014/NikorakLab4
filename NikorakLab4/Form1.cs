@@ -19,6 +19,7 @@ namespace NikorakLab4
         }
         double quickSortCompareCount = 0;
         double quickSortIsertsCount = 0;
+        double[] x;
         void sortInsert(double[] array)
         {
             double[] arr = new double[array.Length];
@@ -270,12 +271,10 @@ namespace NikorakLab4
         {
             Random rand = new Random();
             int arrayLenght = TextBoxToInt(textBox1);
-            double[] x = new double[arrayLenght];
-            dataGridView2.Rows.Clear();
+           x = new double[arrayLenght];
             for (int i = 0; i < x.Length; i++)
             {
                 x[i] = rand.Next(0, 100);
-                dataGridView2.Rows.Add(x[i]);
             }
             dataGridView1.Rows.Clear();
             if (checkBox1.Checked)
@@ -297,6 +296,16 @@ namespace NikorakLab4
             if (checkBox5.Checked)
             {
                 QuickSort(x);
+            }
+            
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            dataGridView2.Rows.Clear();
+            for (int i = 0; i < x.Length; i++)
+            {
+                dataGridView2.Rows.Add(x[i]);
             }
             QuickSortRef(x);
             InverseQuickSortRef(x);
