@@ -16,261 +16,155 @@ namespace NikorakLab4
         public Form1()
         {
             InitializeComponent();
+            AddToTree("solitare", mainNode);
+            AddToTree("passport", mainNode);
+            AddToTree("shelf", mainNode);
+            AddToTree("info", mainNode);
+            AddToTree("ballet", mainNode);
+            AddToTree("base", mainNode);
+            AddToTree("white", mainNode);
+            AddToTree("exposition", mainNode);
+            AddToTree("plenty", mainNode);
+            AddToTree("nation", mainNode);
+            AddToTree("legacy", mainNode);
+            AddToTree("mute", mainNode);
+            AddToTree("unusual", mainNode);
+            AddToTree("late", mainNode);
         }
-        double quickSortCompareCount = 0;
-        double quickSortIsertsCount = 0;
-        double[] x;
-        void sortInsert(double[] array)
+        CNode mainNode = new CNode();
+        class CNode
         {
-            double[] arr = new double[array.Length];
-            for (int i = 0; i < array.Length; i++)
+            public CNode[] mass = new CNode[27];
+            public void Add(int index)
             {
-                arr[i] = array[i];
-            }
-            double compareCount = 0, swapCount = 0;
-            double temp;
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            for (int i = 1; i < arr.Length; i++)
-            {
-                for (int j = i; j > 0; j--)
+                if (mass[index] == null)
                 {
-                    compareCount++;
-                    if (arr[j - 1] > arr[j])
+                    mass[index] = new CNode();
+                }
+            }
+        }
+        void AddToTree(string str, CNode node)
+        {
+            CNode tempNode = node;
+            str = str.ToLower();
+            foreach (char item in str)
+            {
+                if (item >= 97 && item <= 123)
+                {
+                    tempNode.Add(item - 97);
+                    tempNode = tempNode.mass[item - 97];
+                }
+            }
+            tempNode.Add(26);
+            isFindIN.Items.Add(str);
+        }
+        bool isFindWord(string str, CNode node)
+        {
+            CNode tempNode = node;
+            foreach (char item in str)
+            {
+                if (item >= 97 && item <= 122)
+                {
+                    if (tempNode.mass[item - 97] == null)
                     {
-                        swapCount++;
-                        temp = arr[j];
-                        arr[j] = arr[j - 1];
-                        arr[j - 1] = temp;
+                        return false;
+                    }
+                    tempNode = tempNode.mass[item - 97];
+                }
+            }
+            if (tempNode.mass[26] == null)
+            {
+                return false;
+            }
+            return true;
+        }
+        void BuidTree(CNode node, TreeNode treeNode)
+        {
+            for (int i = 0; i < 27; i++)
+            {
+                if (node.mass[i] != null)
+                {
+                    if (i == 26)
+                    {
+                        treeNode.Nodes.Add(Convert.ToString(Convert.ToChar(95)));
                     }
                     else
                     {
-                        break;
+                        treeNode.Nodes.Add(Convert.ToString(Convert.ToChar(i + 97)));
                     }
+                    BuidTree(node.mass[i], TreeNodeCollectionToTreeNode(treeNode.Nodes, Convert.ToChar(i + 97)));
                 }
             }
-            stopwatch.Stop();
-            dataGridView1.Rows.Add("Сортування Вставкою", array.Length, compareCount, swapCount, stopwatch.ElapsedMilliseconds);
         }
-        void sortBubble(double[] array)
+        TreeNode TreeNodeCollectionToTreeNode(TreeNodeCollection nodes, char str)
         {
-            double[] arr = new double[array.Length];
-            for (int i = 0; i < array.Length; i++)
+            foreach (TreeNode item in nodes)
             {
-                arr[i] = array[i];
-            }
-            double compareCount = 0, insertsCount = 0;
-            double temp;
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            for (int i = 0; i < arr.Length; i++)
-            {
-                for (int j = 0; j < arr.Length - i - 1; j++)
+                if (item.Text == Convert.ToString(str))
                 {
-                    compareCount++;
-                    if (arr[j] > arr[j + 1])
-                    {
-                        insertsCount++;
-                        temp = arr[j];
-                        arr[j] = arr[j + 1];
-                        arr[j + 1] = temp;
-                    }
+                    return item;
                 }
             }
-            stopwatch.Stop();
-            dataGridView1.Rows.Add("Сортування Обімном", array.Length, compareCount, insertsCount, stopwatch.ElapsedMilliseconds);
+            return null;
         }
-        void sortChoise(double[] array)
+        void ExpandTree(string str)
         {
-            double[] arr = new double[array.Length];
-            for (int i = 0; i < array.Length; i++)
+            TreeNode collection = treeView1.Nodes[0];
+            foreach (char item in str)
             {
-                arr[i] = array[i];
-            }
-            double compareCount = 0, insertsCount = 0, temp;
-            int minPos = 0;
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            for (int i = 0; i < arr.Length; i++)
-            {
-                minPos = i;
-                for (int j = i + 1; j < arr.Length; j++)
-                {
-                    compareCount++;
-                    if (arr[minPos] > arr[j])
-                    {
-                        minPos = j;
-                    }
-                }
-                insertsCount++;
-                temp = arr[minPos];
-                arr[minPos] = arr[i];
-                arr[i] = temp;
-            }
-            stopwatch.Stop();
-            dataGridView1.Rows.Add("Сортування Вибором", array.Length, compareCount, insertsCount, stopwatch.ElapsedMilliseconds);
-        }
-
-
-        void sortShell(double[] array)
-        {
-            double compareCount = 0, insertsCount = 0;
-            double temp;
-            double[] arr = new double[array.Length];
-            for (int i = 0; i < array.Length; i++)
-            {
-                arr[i] = array[i];
-            }
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            //
-            int d = array.Length / 2;
-            while (d >= 1)
-            {
-                for (var i = d; i < arr.Length; i++)
-                {
-                    var j = i;
-                    compareCount++;
-                    while ((j >= d) && (arr[j - d] > arr[j]))
-                    {
-                        insertsCount++;
-                        temp = arr[j];
-                        arr[j] = arr[j - d];
-                        arr[j - d] = temp;
-                        j = j - d;
-                    }
-                }
-                d = d / 2;
-            }
-            stopwatch.Stop();
-            dataGridView1.Rows.Add("Сортування Шелла", array.Length, compareCount, insertsCount, stopwatch.ElapsedMilliseconds);
-        }
-
-        void QuickSort(double[] array)
-        {
-            double[] arr = new double[array.Length];
-            for (int i = 0; i < array.Length; i++)
-            {
-                arr[i] = array[i];
-            }
-            quickSortIsertsCount = 0;
-            quickSortCompareCount = 0;
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            quickSort(arr, 0, arr.Length - 1);
-            stopwatch.Stop();
-            dataGridView1.Rows.Add("Швидке сортування", arr.Length, quickSortCompareCount, quickSortIsertsCount, stopwatch.ElapsedMilliseconds);
-        }
-
-
-        void quickSort(double[] arr, int first, int last)
-        {
-            int i = first;
-            int j = last;
-            double temp;
-
-            double middle = arr[last - 1 / 2];
-            while (i <= j)
-            {
-                while (arr[i] < middle)
-                {
-                    ++i;
-                }
-
-                while (arr[j] > middle)
-                {
-                    --j;
-                }
-                quickSortCompareCount++;
-                if (i <= j)
-                {
-                    quickSortIsertsCount++;
-                    temp = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = temp;
-                    ++i;
-                    --j;
-                }
-            }
-            if (i < last)
-            {
-                quickSort(arr, i, last);
-            }
-            if (j > first)
-            {
-                quickSort(arr, first, j);
+                TreeNodeCollectionToTreeNode(collection.Nodes, item).Expand();
+                collection = TreeNodeCollectionToTreeNode(collection.Nodes, item);
             }
         }
-        void QuickSortRef(double[] array)
+        string ComboBoxToString(ComboBox comboBox)
         {
-            quickSort(array, 0, array.Length - 1);
-            dataGridView3.Rows.Clear();
-            for (int i = 0; i < array.Length; i++)
-            {
-                dataGridView3.Rows.Add(array[i]);
-            }
+            if (comboBox.Text == "") { return ""; }
+            else return comboBox.Text;
         }
-        void InverseQuickSortRef(double[] array)
+        string TextBoxToString(TextBox textBox)
         {
-            quickSort(array, 0, array.Length - 1);
-            dataGridView4.Rows.Clear();
-            for (int i = array.Length-1; i >= 0; i--)
-            {
-                dataGridView4.Rows.Add(array[i]);
-            }
+            if (textBox.Text == "") { return ""; }
+            else return textBox.Text;
         }
-        int TextBoxToInt(TextBox textBox)
+        private void addToTreeButton_Click(object sender, EventArgs e)
         {
-            if (textBox.Text == "")
+            string str = TextBoxToString(addToTreeIN);
+            if (str != "") {
+                AddToTree(str, mainNode);
+            }
+            treeView1.Nodes[0].Nodes.Clear();
+            BuidTree(mainNode, treeView1.Nodes[0]);
+            treeView1.Nodes[0].ExpandAll();
+        }
+
+        private void isFindButton_Click(object sender, EventArgs e)
+        {
+            treeView1.Nodes[0].Collapse();
+            string str = ComboBoxToString(isFindIN);
+            if (isFindWord(str, mainNode))
             {
-                return 1;
+                treeView1.Nodes[0].Expand();
+                ExpandTree(str);
+                isFindStatus.Text = "Слово Знайдено";
             }
             else
             {
-                return Convert.ToInt32(textBox.Text);
-            }
-        }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Random rand = new Random();
-            int arrayLenght = TextBoxToInt(textBox1);
-           x = new double[arrayLenght];
-            for (int i = 0; i < x.Length; i++)
-            {
-                x[i] = rand.Next(0, 100);
-            }
-            dataGridView1.Rows.Clear();
-            if (checkBox1.Checked)
-            {
-                sortInsert(x);
-            }
-            if (checkBox2.Checked)
-            {
-                sortBubble(x);
-            }
-            if (checkBox3.Checked)
-            {
-                sortChoise(x);
-            }
-            if (checkBox4.Checked)
-            {
-                sortShell(x);
-            }
-            if (checkBox5.Checked)
-            {
-                QuickSort(x);
+                isFindStatus.Text = "Слово Не Знайдено";
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void buildTreeButton_Click(object sender, EventArgs e)
         {
-            dataGridView2.Rows.Clear();
-            for (int i = 0; i < x.Length; i++)
-            {
-                dataGridView2.Rows.Add(x[i]);
-            }
-            QuickSortRef(x);
-            InverseQuickSortRef(x);
+            treeView1.Nodes[0].Nodes.Clear();
+            BuidTree(mainNode, treeView1.Nodes[0]);
+            treeView1.Nodes[0].ExpandAll();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            treeView1.Nodes[0].Nodes.Clear();
+            BuidTree(mainNode, treeView1.Nodes[0]);
+            treeView1.Nodes[0].ExpandAll();
         }
     }
 }
