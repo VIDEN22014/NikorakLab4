@@ -123,6 +123,7 @@ namespace NikorakLab4
             }
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
+            //
             int d = array.Length / 2;
             while (d >= 1)
             {
@@ -200,44 +201,6 @@ namespace NikorakLab4
                 quickSort(arr, first, j);
             }
         }
-        void inverseQuickSort(double[] arr, int first, int last)
-        {
-            int i = first;
-            int j = last;
-            double temp;
-
-            double middle = arr[last - 1 / 2];
-            while (i >= j)
-            {
-                while (arr[i] > middle)
-                {
-                    ++i;
-                }
-
-                while (arr[j] < middle)
-                {
-                    --j;
-                }
-                quickSortCompareCount++;
-                if (i >= j)
-                {
-                    quickSortIsertsCount++;
-                    temp = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = temp;
-                    ++i;
-                    --j;
-                }
-            }
-            if (i < last)
-            {
-                quickSort(arr, i, last);
-            }
-            if (j > first)
-            {
-                quickSort(arr, first, j);
-            }
-        }
         void QuickSortRef(double[] array)
         {
             quickSort(array, 0, array.Length - 1);
@@ -297,7 +260,6 @@ namespace NikorakLab4
             {
                 QuickSort(x);
             }
-            
         }
 
         private void button2_Click(object sender, EventArgs e)
